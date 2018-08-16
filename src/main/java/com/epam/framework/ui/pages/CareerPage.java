@@ -1,5 +1,6 @@
 package com.epam.framework.ui.pages;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
@@ -11,6 +12,7 @@ import java.util.List;
  */
 public class CareerPage extends BasePage {
 
+    //web elements
     @FindBy(id = "new_form_job_search-keyword")
     private WebElement searchJobField;
 
@@ -35,7 +37,12 @@ public class CareerPage extends BasePage {
      */
     public void fillJobData(String jobTitle, String country, String filter) {
         type(searchJobField, jobTitle);
-        new Select(selectListCountry).selectByValue(country);
+
+        try {
+            new Select(selectListCountry).selectByValue(country);
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+        }
         listFilters.stream()
                 .filter(checkBoxElement -> checkBoxElement.getText().equals(filter))
                 .forEach(WebElement::click);
@@ -44,7 +51,7 @@ public class CareerPage extends BasePage {
 
     /**
      * Assert that check correct search
-     * @return
+     * @return boolean
      */
     public boolean isSearchCorrect() {
         return isElementPresent(searchResultElement);
